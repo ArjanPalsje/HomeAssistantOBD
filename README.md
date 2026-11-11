@@ -24,9 +24,13 @@ voor de **Vgate iCar Pro 2S**.
 
 ### Via HACS (custom repository)
 
-1. HACS → menu ⋮ → **Custom repositories** → URL van deze repository, type **Integration**.
-2. Zoek **OBD2 Vehicle** en installeer.
-3. Herstart Home Assistant.
+1. HACS → menu ⋮ (rechtsboven) → **Custom repositories**.
+2. Repository: `https://github.com/ArjanPalsje/HomeAssistantOBD`, Type: **Integration** → **Add**.
+3. Zoek in HACS **OBD2 Vehicle** → **Download**.
+4. Herstart Home Assistant en voeg de integratie toe via Instellingen → Apparaten & diensten.
+
+> De HACS-validatie in GitHub Actions (topics, beschrijving, brands) is alleen vereist voor
+> opname in de standaard HACS-winkel, niet om de repository als custom repository te gebruiken.
 
 ### Handmatig
 
