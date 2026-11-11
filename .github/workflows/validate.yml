@@ -19,6 +19,9 @@ jobs:
       - uses: hacs/action@main
         with:
           category: integration
+          # Description/topics are GitHub repository settings, only required for
+          # inclusion in the default HACS store (not for custom repositories).
+          ignore: "description topics"
 
   tests:
     runs-on: ubuntu-latest
