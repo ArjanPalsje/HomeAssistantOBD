@@ -1,0 +1,159 @@
+{
+  "id": "renault_zoe_ze40",
+  "name": "Renault Zoe Phase 1 (ZE40 / R110)",
+  "manufacturers": [
+    "Renault"
+  ],
+  "powertrain": "electric",
+  "status": "experimental",
+  "detect": {
+    "wmi": [
+      "VF1"
+    ],
+    "probe": "soc",
+    "priority": 31
+  },
+  "init": [
+    "ATSP6"
+  ],
+  "requests": [
+    {
+      "id": "soc",
+      "request": "222002",
+      "init": [
+        "ATSH7E4",
+        "ATCRA7EC"
+      ],
+      "rate": "fast",
+      "values": [
+        {
+          "key": "hv_soc",
+          "formula": "[B4:B5]*0.02",
+          "name": "HV battery state of charge (BMS)",
+          "names": {
+            "nl": "HV-accu laadtoestand (BMS)"
+          },
+          "unit": "%",
+          "device_class": "battery",
+          "precision": 1,
+          "category": "ev"
+        }
+      ]
+    },
+    {
+      "id": "voltage",
+      "request": "223203",
+      "init": [
+        "ATSH7E4",
+        "ATCRA7EC"
+      ],
+      "rate": "fast",
+      "values": [
+        {
+          "key": "hv_voltage",
+          "formula": "[B4:B5]*0.5",
+          "name": "HV battery voltage",
+          "names": {
+            "nl": "HV-accu spanning"
+          },
+          "unit": "V",
+          "device_class": "voltage",
+          "precision": 1,
+          "realtime": true,
+          "category": "ev"
+        }
+      ]
+    },
+    {
+      "id": "current",
+      "request": "223204",
+      "init": [
+        "ATSH7E4",
+        "ATCRA7EC"
+      ],
+      "rate": "fast",
+      "values": [
+        {
+          "key": "hv_current",
+          "formula": "[B4:B5] * 0.25 - 8192",
+          "name": "HV battery current",
+          "names": {
+            "nl": "HV-accu stroom"
+          },
+          "unit": "A",
+          "device_class": "current",
+          "precision": 1,
+          "realtime": true,
+          "category": "ev"
+        }
+      ]
+    },
+    {
+      "id": "soh",
+      "request": "223206",
+      "init": [
+        "ATSH7E4",
+        "ATCRA7EC"
+      ],
+      "rate": "slow",
+      "values": [
+        {
+          "key": "hv_soh",
+          "formula": "B4",
+          "name": "HV battery state of health",
+          "names": {
+            "nl": "HV-accu gezondheid (SOH)"
+          },
+          "unit": "%",
+          "precision": 1,
+          "icon": "mdi:battery-heart-variant",
+          "category": "ev"
+        }
+      ]
+    },
+    {
+      "id": "odometer",
+      "request": "222006",
+      "init": [
+        "ATSH7E4",
+        "ATCRA7EC"
+      ],
+      "rate": "slow",
+      "values": [
+        {
+          "key": "odometer",
+          "formula": "[B4:B6]",
+          "name": "Odometer",
+          "names": {
+            "nl": "Kilometerstand"
+          },
+          "unit": "km",
+          "device_class": "distance",
+          "state_class": "total_increasing",
+          "icon": "mdi:counter",
+          "category": "general"
+        }
+      ]
+    }
+  ],
+  "derived": [
+    {
+      "key": "hv_power",
+      "formula": "hv_voltage*hv_current/1000",
+      "name": "HV battery power",
+      "names": {
+        "nl": "HV-accu vermogen"
+      },
+      "unit": "kW",
+      "device_class": "power",
+      "precision": 2,
+      "realtime": true,
+      "category": "ev"
+    }
+  ],
+  "sources": [
+    "https://github.com/meatpiHQ/wican-fw/blob/main/vehicle_profiles/renault/Renault%20Zoe%20R110.json",
+    "https://github.com/fesch/CanZE/blob/master/app/src/main/assets/ZOE/_Fields.csv"
+  ],
+  "notes": "EVC (7E4/7EC). Voltage identifier from CanZE (the WiCAN voltage formula is wrong). Sign of the current follows CanZE. Not validated on a vehicle."
+}

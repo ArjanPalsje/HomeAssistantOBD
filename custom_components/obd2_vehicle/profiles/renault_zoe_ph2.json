@@ -1,0 +1,169 @@
+{
+  "id": "renault_zoe_ph2",
+  "name": "Renault Zoe Phase 2 (ZE50, 2020+)",
+  "manufacturers": [
+    "Renault"
+  ],
+  "powertrain": "electric",
+  "status": "experimental",
+  "detect": {
+    "wmi": [
+      "VF1"
+    ],
+    "probe": "soc",
+    "priority": 30
+  },
+  "requests": [
+    {
+      "id": "soc",
+      "request": "229002",
+      "init": [
+        "ATSP7",
+        "ATCP18",
+        "ATSHDB33F1"
+      ],
+      "rate": "fast",
+      "values": [
+        {
+          "key": "hv_soc",
+          "formula": "[B4:B5] * 0.01",
+          "name": "HV battery state of charge (BMS)",
+          "names": {
+            "nl": "HV-accu laadtoestand (BMS)"
+          },
+          "unit": "%",
+          "device_class": "battery",
+          "precision": 1,
+          "category": "ev"
+        }
+      ]
+    },
+    {
+      "id": "voltage",
+      "request": "229005",
+      "init": [
+        "ATSP7",
+        "ATCP18",
+        "ATSHDB33F1"
+      ],
+      "rate": "fast",
+      "values": [
+        {
+          "key": "hv_voltage",
+          "formula": "[B4:B5]*0.1",
+          "name": "HV battery voltage",
+          "names": {
+            "nl": "HV-accu spanning"
+          },
+          "unit": "V",
+          "device_class": "voltage",
+          "precision": 1,
+          "realtime": true,
+          "category": "ev"
+        }
+      ]
+    },
+    {
+      "id": "temperature",
+      "request": "229012",
+      "init": [
+        "ATSP7",
+        "ATCP18",
+        "ATSHDB33F1"
+      ],
+      "rate": "slow",
+      "values": [
+        {
+          "key": "hv_temp",
+          "formula": "([B4:B5]-640)*0.0625",
+          "name": "HV battery temperature",
+          "names": {
+            "nl": "HV-accu temperatuur"
+          },
+          "unit": "°C",
+          "device_class": "temperature",
+          "category": "ev"
+        }
+      ]
+    },
+    {
+      "id": "soh",
+      "request": "229003",
+      "init": [
+        "ATSP7",
+        "ATCP18",
+        "ATSHDB33F1"
+      ],
+      "rate": "slow",
+      "values": [
+        {
+          "key": "hv_soh",
+          "formula": "[B4:B5] * 0.01",
+          "name": "HV battery state of health",
+          "names": {
+            "nl": "HV-accu gezondheid (SOH)"
+          },
+          "unit": "%",
+          "precision": 1,
+          "icon": "mdi:battery-heart-variant",
+          "category": "ev"
+        }
+      ]
+    },
+    {
+      "id": "aux",
+      "request": "222005",
+      "init": [
+        "ATSP7",
+        "ATCP18",
+        "ATSHDB33F1"
+      ],
+      "rate": "fast",
+      "values": [
+        {
+          "key": "aux_battery_voltage",
+          "formula": "[B4:B5] * 0.01",
+          "name": "12 V battery voltage (vehicle)",
+          "names": {
+            "nl": "12V-accu spanning (voertuig)"
+          },
+          "unit": "V",
+          "device_class": "voltage",
+          "precision": 2,
+          "realtime": true,
+          "category": "ev"
+        }
+      ]
+    },
+    {
+      "id": "odometer",
+      "request": "222006",
+      "init": [
+        "ATSP7",
+        "ATCP18",
+        "ATSHDB33F1"
+      ],
+      "rate": "slow",
+      "values": [
+        {
+          "key": "odometer",
+          "formula": "[B4:B6]",
+          "name": "Odometer",
+          "names": {
+            "nl": "Kilometerstand"
+          },
+          "unit": "km",
+          "device_class": "distance",
+          "state_class": "total_increasing",
+          "icon": "mdi:counter",
+          "category": "general"
+        }
+      ]
+    }
+  ],
+  "sources": [
+    "https://github.com/meatpiHQ/wican-fw/blob/main/vehicle_profiles/renault/Renault%20Zoe%20Ph2%20(2020).json",
+    "https://github.com/fesch/CanZE/blob/master/app/src/main/assets/ZOE_Ph2/_Fields.csv"
+  ],
+  "notes": "Functional 29-bit requests as in WiCAN. evDash first switches the diagnostic session (0x10 03); this integration never sends session control, so some identifiers may answer with a negative response. Not validated on a vehicle."
+}

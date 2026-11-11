@@ -1,0 +1,163 @@
+{
+  "id": "hyundai_kia_egmp",
+  "name": "Hyundai / Kia E-GMP – Ioniq 5, Ioniq 6, EV6 (with charging flags)",
+  "extends": "hyundai_kia_ev",
+  "manufacturers": [
+    "Hyundai",
+    "Kia"
+  ],
+  "powertrain": "electric",
+  "status": "community",
+  "detect": {
+    "auto": false
+  },
+  "requests": [
+    {
+      "id": "bms",
+      "request": "220101",
+      "init": [
+        "ATSH7E4"
+      ],
+      "rate": "fast",
+      "values": [
+        {
+          "key": "hv_soc",
+          "formula": "B10/2",
+          "name": "HV battery state of charge (BMS)",
+          "names": {
+            "nl": "HV-accu laadtoestand (BMS)"
+          },
+          "unit": "%",
+          "device_class": "battery",
+          "precision": 1,
+          "category": "ev"
+        },
+        {
+          "key": "hv_voltage",
+          "formula": "[B19:B20]/10",
+          "name": "HV battery voltage",
+          "names": {
+            "nl": "HV-accu spanning"
+          },
+          "unit": "V",
+          "device_class": "voltage",
+          "precision": 1,
+          "realtime": true,
+          "category": "ev"
+        },
+        {
+          "key": "hv_current",
+          "formula": "((S17*256)+B18)/10",
+          "name": "HV battery current",
+          "names": {
+            "nl": "HV-accu stroom"
+          },
+          "unit": "A",
+          "device_class": "current",
+          "precision": 1,
+          "realtime": true,
+          "category": "ev"
+        },
+        {
+          "key": "hv_temp_max",
+          "formula": "S21",
+          "name": "HV battery max temperature",
+          "names": {
+            "nl": "HV-accu max. temperatuur"
+          },
+          "unit": "°C",
+          "device_class": "temperature",
+          "category": "ev"
+        },
+        {
+          "key": "hv_temp_min",
+          "formula": "S22",
+          "name": "HV battery min temperature",
+          "names": {
+            "nl": "HV-accu min. temperatuur"
+          },
+          "unit": "°C",
+          "device_class": "temperature",
+          "category": "ev"
+        },
+        {
+          "key": "aux_battery_voltage",
+          "formula": "B38*0.1",
+          "name": "12 V battery voltage (vehicle)",
+          "names": {
+            "nl": "12V-accu spanning (voertuig)"
+          },
+          "unit": "V",
+          "device_class": "voltage",
+          "precision": 2,
+          "realtime": true,
+          "category": "ev"
+        },
+        {
+          "key": "energy_charged_total",
+          "formula": "((B49<<24)+(B50<<16)+(B51<<8)+B52)/10",
+          "name": "Cumulative energy charged",
+          "names": {
+            "nl": "Totaal geladen energie"
+          },
+          "unit": "kWh",
+          "device_class": "energy",
+          "state_class": "total_increasing",
+          "precision": 1,
+          "category": "ev"
+        },
+        {
+          "key": "energy_discharged_total",
+          "formula": "((B53<<24)+(B54<<16)+(B55<<8)+B57)/10",
+          "name": "Cumulative energy discharged",
+          "names": {
+            "nl": "Totaal ontladen energie"
+          },
+          "unit": "kWh",
+          "device_class": "energy",
+          "state_class": "total_increasing",
+          "precision": 1,
+          "category": "ev"
+        },
+        {
+          "key": "charging",
+          "formula": "B15:7",
+          "name": "Charging",
+          "names": {
+            "nl": "Laden actief"
+          },
+          "binary": true,
+          "device_class": "battery_charging",
+          "category": "ev"
+        },
+        {
+          "key": "charging_dc",
+          "formula": "B15:6",
+          "name": "DC fast charging",
+          "names": {
+            "nl": "DC-snelladen actief"
+          },
+          "binary": true,
+          "icon": "mdi:ev-station",
+          "category": "ev"
+        },
+        {
+          "key": "ac_plug",
+          "formula": "B15:5",
+          "name": "AC charging plug connected",
+          "names": {
+            "nl": "AC-laadstekker aangesloten"
+          },
+          "binary": true,
+          "device_class": "plug",
+          "category": "ev"
+        }
+      ]
+    }
+  ],
+  "sources": [
+    "https://github.com/meatpiHQ/wican-fw/blob/main/vehicle_profiles/hyundai/ioniq5-6.json",
+    "https://github.com/nickn17/evDash/blob/master/src/CarHyundaiEgmp.cpp"
+  ],
+  "notes": "Select manually for E-GMP vehicles. evDash reports that the B15 AC/DC bits are not always reliable on E-GMP; treat them as indicative."
+}

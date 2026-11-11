@@ -1,0 +1,73 @@
+# Voorbeeld-Lovelace-dashboard (Instellingen > Dashboards > nieuw dashboard >
+# Raw configuration editor). Alleen standaardkaarten, geen extra HACS-kaarten nodig.
+# Pas de entity_id's aan jouw voertuignamen aan ("auto" = verbrandingsmotor, "kona" = EV).
+title: Voertuigen
+views:
+  - title: Voertuigen
+    path: voertuigen
+    icon: mdi:car
+    cards:
+      - type: vertical-stack
+        cards:
+          - type: heading
+            heading: Auto (benzine)
+            icon: mdi:car
+          - type: gauge
+            entity: sensor.auto_brandstofniveau
+            name: Brandstof
+            min: 0
+            max: 100
+            severity:
+              green: 40
+              yellow: 20
+              red: 0
+          - type: entities
+            entities:
+              - entity: sensor.auto_kilometerstand
+              - entity: sensor.auto_verbindingsstatus
+              - entity: binary_sensor.auto_dongle_binnen_bereik
+              - entity: binary_sensor.auto_voertuig_reageert
+              - entity: sensor.auto_laatste_succesvolle_uitlezing
+                format: relative
+              - entity: sensor.auto_12v_accu_gemeten_door_dongle
+              - entity: sensor.auto_opgeslagen_foutcodes
+              - entity: binary_sensor.auto_storingslampje_mil
+          - type: button
+            entity: button.auto_nu_volledig_uitlezen
+            show_state: false
+
+      - type: vertical-stack
+        cards:
+          - type: heading
+            heading: Kona (EV)
+            icon: mdi:car-electric
+          - type: gauge
+            entity: sensor.kona_hv_accu_laadtoestand_bms
+            name: Accu (SOC)
+            min: 0
+            max: 100
+            needle: true
+            severity:
+              green: 50
+              yellow: 30
+              red: 0
+          - type: glance
+            entities:
+              - entity: sensor.kona_hv_accu_gezondheid_soh
+                name: SOH
+              - entity: sensor.kona_hv_accu_vermogen
+                name: Vermogen
+              - entity: sensor.kona_hv_accu_max_temperatuur
+                name: Temp.
+          - type: entities
+            entities:
+              - entity: sensor.kona_kilometerstand
+              - entity: sensor.kona_laadvermogen_uit_accustroom
+              - entity: sensor.kona_verbindingsstatus
+              - entity: sensor.kona_laatste_succesvolle_uitlezing
+                format: relative
+              - entity: sensor.kona_12v_accu_spanning_voertuig
+          - type: history-graph
+            hours_to_show: 48
+            entities:
+              - entity: sensor.kona_hv_accu_laadtoestand_bms

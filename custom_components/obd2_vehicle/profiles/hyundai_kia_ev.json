@@ -1,0 +1,233 @@
+{
+  "id": "hyundai_kia_ev",
+  "name": "Hyundai / Kia EV – Kona Electric, e-Niro, e-Soul (64 kWh), Ioniq 5/6, EV6",
+  "manufacturers": [
+    "Hyundai",
+    "Kia"
+  ],
+  "powertrain": "electric",
+  "status": "community",
+  "detect": {
+    "wmi": [
+      "KMH",
+      "KNA",
+      "KNC",
+      "KND",
+      "KNE",
+      "TMA",
+      "U5Y",
+      "U6Y",
+      "NLH"
+    ],
+    "probe": "bms",
+    "priority": 10
+  },
+  "init": [
+    "ATST96"
+  ],
+  "requests": [
+    {
+      "id": "bms",
+      "request": "220101",
+      "init": [
+        "ATSH7E4"
+      ],
+      "rate": "fast",
+      "values": [
+        {
+          "key": "hv_soc",
+          "formula": "B10/2",
+          "name": "HV battery state of charge (BMS)",
+          "names": {
+            "nl": "HV-accu laadtoestand (BMS)"
+          },
+          "unit": "%",
+          "device_class": "battery",
+          "precision": 1,
+          "category": "ev"
+        },
+        {
+          "key": "hv_voltage",
+          "formula": "[B19:B20]/10",
+          "name": "HV battery voltage",
+          "names": {
+            "nl": "HV-accu spanning"
+          },
+          "unit": "V",
+          "device_class": "voltage",
+          "precision": 1,
+          "realtime": true,
+          "category": "ev"
+        },
+        {
+          "key": "hv_current",
+          "formula": "((S17*256)+B18)/10",
+          "name": "HV battery current",
+          "names": {
+            "nl": "HV-accu stroom"
+          },
+          "unit": "A",
+          "device_class": "current",
+          "precision": 1,
+          "realtime": true,
+          "category": "ev"
+        },
+        {
+          "key": "hv_temp_max",
+          "formula": "S21",
+          "name": "HV battery max temperature",
+          "names": {
+            "nl": "HV-accu max. temperatuur"
+          },
+          "unit": "°C",
+          "device_class": "temperature",
+          "category": "ev"
+        },
+        {
+          "key": "hv_temp_min",
+          "formula": "S22",
+          "name": "HV battery min temperature",
+          "names": {
+            "nl": "HV-accu min. temperatuur"
+          },
+          "unit": "°C",
+          "device_class": "temperature",
+          "category": "ev"
+        },
+        {
+          "key": "aux_battery_voltage",
+          "formula": "B38*0.1",
+          "name": "12 V battery voltage (vehicle)",
+          "names": {
+            "nl": "12V-accu spanning (voertuig)"
+          },
+          "unit": "V",
+          "device_class": "voltage",
+          "precision": 2,
+          "realtime": true,
+          "category": "ev"
+        },
+        {
+          "key": "energy_charged_total",
+          "formula": "((B49<<24)+(B50<<16)+(B51<<8)+B52)/10",
+          "name": "Cumulative energy charged",
+          "names": {
+            "nl": "Totaal geladen energie"
+          },
+          "unit": "kWh",
+          "device_class": "energy",
+          "state_class": "total_increasing",
+          "precision": 1,
+          "category": "ev"
+        },
+        {
+          "key": "energy_discharged_total",
+          "formula": "((B53<<24)+(B54<<16)+(B55<<8)+B57)/10",
+          "name": "Cumulative energy discharged",
+          "names": {
+            "nl": "Totaal ontladen energie"
+          },
+          "unit": "kWh",
+          "device_class": "energy",
+          "state_class": "total_increasing",
+          "precision": 1,
+          "category": "ev"
+        }
+      ]
+    },
+    {
+      "id": "bms_soh",
+      "request": "220105",
+      "init": [
+        "ATSH7E4"
+      ],
+      "rate": "fast",
+      "values": [
+        {
+          "key": "hv_soh",
+          "formula": "[B34:B35]/10",
+          "name": "HV battery state of health",
+          "names": {
+            "nl": "HV-accu gezondheid (SOH)"
+          },
+          "unit": "%",
+          "precision": 1,
+          "icon": "mdi:battery-heart-variant",
+          "category": "ev"
+        },
+        {
+          "key": "hv_soc_display",
+          "formula": "B41/2",
+          "name": "HV battery state of charge (display)",
+          "names": {
+            "nl": "HV-accu laadtoestand (dashboard)"
+          },
+          "unit": "%",
+          "device_class": "battery",
+          "precision": 1,
+          "category": "ev"
+        }
+      ]
+    },
+    {
+      "id": "odometer",
+      "request": "22B002",
+      "init": [
+        "ATSH7C6"
+      ],
+      "rate": "slow",
+      "values": [
+        {
+          "key": "odometer",
+          "formula": "[B12:B14]",
+          "name": "Odometer",
+          "names": {
+            "nl": "Kilometerstand"
+          },
+          "unit": "km",
+          "device_class": "distance",
+          "state_class": "total_increasing",
+          "icon": "mdi:counter",
+          "category": "general"
+        }
+      ]
+    }
+  ],
+  "derived": [
+    {
+      "key": "hv_power",
+      "formula": "hv_voltage*hv_current/1000",
+      "name": "HV battery power",
+      "names": {
+        "nl": "HV-accu vermogen"
+      },
+      "unit": "kW",
+      "device_class": "power",
+      "precision": 2,
+      "realtime": true,
+      "category": "ev"
+    },
+    {
+      "key": "charging_power",
+      "formula": "max(0, 0-hv_power)",
+      "name": "Charging power (from battery current)",
+      "names": {
+        "nl": "Laadvermogen (uit accustroom)"
+      },
+      "unit": "kW",
+      "device_class": "power",
+      "precision": 2,
+      "realtime": true,
+      "category": "ev"
+    }
+  ],
+  "sources": [
+    "https://github.com/meatpiHQ/wican-fw/blob/main/vehicle_profiles/hyundai/ioniq5-6.json",
+    "https://github.com/meatpiHQ/wican-fw/blob/main/vehicle_profiles/kia/niro-ev.json",
+    "https://github.com/meatpiHQ/wican-fw/blob/main/vehicle_profiles/kia/nirosoulkona-ev.json",
+    "https://github.com/meatpiHQ/wican-fw/blob/main/vehicle_profiles/hyundai/kona.json",
+    "https://github.com/nickn17/evDash/blob/master/src/CarKiaEniro.cpp",
+    "https://github.com/nickn17/evDash/blob/master/src/CarHyundaiEgmp.cpp"
+  ],
+  "notes": "Common subset of the 64 kWh platform (Kona/e-Niro/e-Soul) and E-GMP (Ioniq 5/6, EV6). Current sign: positive = discharging (evDash convention); hv_power is negative while charging. Formulas copied from WiCAN ioniq5-6.json and cross-checked against evDash. Charging flags are only in the E-GMP profile."
+}

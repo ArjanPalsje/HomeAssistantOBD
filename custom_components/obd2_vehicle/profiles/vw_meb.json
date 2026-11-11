@@ -1,0 +1,205 @@
+{
+  "id": "vw_meb",
+  "name": "Volkswagen group MEB – ID.3, ID.4, ID.5, Enyaq, Q4 e-tron, Born",
+  "manufacturers": [
+    "Volkswagen",
+    "Škoda",
+    "Audi",
+    "Cupra",
+    "SEAT"
+  ],
+  "powertrain": "electric",
+  "status": "community",
+  "detect": {
+    "wmi": [
+      "WVW",
+      "WVG",
+      "WV1",
+      "WV2",
+      "TMB",
+      "WAU",
+      "WA1",
+      "VSS"
+    ],
+    "probe": "soc",
+    "priority": 10
+  },
+  "init": [
+    "ATST96"
+  ],
+  "requests": [
+    {
+      "id": "soc",
+      "request": "22028C",
+      "init": [
+        "ATSP7",
+        "ATCP17",
+        "ATSHFC007B",
+        "ATFCSH17FC007B",
+        "ATCRA17FE007B",
+        "ATFCSD300000",
+        "ATFCSM1"
+      ],
+      "rate": "fast",
+      "values": [
+        {
+          "key": "hv_soc",
+          "formula": "(B4/2.5)",
+          "name": "HV battery state of charge (BMS)",
+          "names": {
+            "nl": "HV-accu laadtoestand (BMS)"
+          },
+          "unit": "%",
+          "device_class": "battery",
+          "precision": 1,
+          "category": "ev"
+        },
+        {
+          "key": "hv_soc_display",
+          "formula": "B4*0.4425-6.1947",
+          "name": "HV battery state of charge (display)",
+          "names": {
+            "nl": "HV-accu laadtoestand (dashboard)"
+          },
+          "unit": "%",
+          "device_class": "battery",
+          "precision": 1,
+          "category": "ev"
+        }
+      ]
+    },
+    {
+      "id": "voltage",
+      "request": "221E3B",
+      "init": [
+        "ATSP7",
+        "ATCP17",
+        "ATSHFC007B",
+        "ATFCSH17FC007B",
+        "ATCRA17FE007B",
+        "ATFCSD300000",
+        "ATFCSM1"
+      ],
+      "rate": "fast",
+      "values": [
+        {
+          "key": "hv_voltage",
+          "formula": "(((B4*256)+B5)/4)",
+          "name": "HV battery voltage",
+          "names": {
+            "nl": "HV-accu spanning"
+          },
+          "unit": "V",
+          "device_class": "voltage",
+          "precision": 1,
+          "realtime": true,
+          "category": "ev"
+        }
+      ]
+    },
+    {
+      "id": "temperature",
+      "request": "222A0B",
+      "init": [
+        "ATSP7",
+        "ATCP17",
+        "ATSHFC007B",
+        "ATFCSH17FC007B",
+        "ATCRA17FE007B",
+        "ATFCSD300000",
+        "ATFCSM1"
+      ],
+      "rate": "slow",
+      "values": [
+        {
+          "key": "hv_temp",
+          "formula": "((B4/2)-40)",
+          "name": "HV battery temperature",
+          "names": {
+            "nl": "HV-accu temperatuur"
+          },
+          "unit": "°C",
+          "device_class": "temperature",
+          "category": "ev"
+        }
+      ]
+    },
+    {
+      "id": "charge_state",
+      "request": "227448",
+      "init": [
+        "ATSP7",
+        "ATCP17",
+        "ATSHFC007B",
+        "ATFCSH17FC007B",
+        "ATCRA17FE007B",
+        "ATFCSD300000",
+        "ATFCSM1"
+      ],
+      "rate": "fast",
+      "values": [
+        {
+          "key": "charging",
+          "formula": "B4:2",
+          "name": "Charging",
+          "names": {
+            "nl": "Laden actief"
+          },
+          "binary": true,
+          "device_class": "battery_charging",
+          "category": "ev"
+        },
+        {
+          "key": "charge_state",
+          "formula": "B4",
+          "name": "Charging state",
+          "names": {
+            "nl": "Laadstatus"
+          },
+          "map": {
+            "1": "driving",
+            "4": "ac_charging",
+            "6": "dc_charging"
+          },
+          "icon": "mdi:ev-plug-type2",
+          "category": "ev"
+        }
+      ]
+    },
+    {
+      "id": "odometer",
+      "request": "22295A",
+      "init": [
+        "ATSP7",
+        "ATCP17",
+        "ATSHFC0076",
+        "ATCRA17FE0076",
+        "ATFCSH17FC0076",
+        "ATFCSD300000",
+        "ATFCSM1"
+      ],
+      "rate": "slow",
+      "values": [
+        {
+          "key": "odometer",
+          "formula": "[B4:B6]",
+          "name": "Odometer",
+          "names": {
+            "nl": "Kilometerstand"
+          },
+          "unit": "km",
+          "device_class": "distance",
+          "state_class": "total_increasing",
+          "icon": "mdi:counter",
+          "category": "general"
+        }
+      ]
+    }
+  ],
+  "sources": [
+    "https://github.com/meatpiHQ/wican-fw/blob/main/vehicle_profiles/vw/ev_meb.json",
+    "https://github.com/meatpiHQ/wican-fw/blob/main/vehicle_profiles/vw/id.json",
+    "https://github.com/nickn17/evDash/blob/master/src/CarVWID3.cpp"
+  ],
+  "notes": "Uses 29-bit CAN to the BMS (17FC007B). Battery current is omitted: the WiCAN formula is disputed by evDash. Display SOC formula from WiCAN id.json. No SOH available from these sources. Probing a combustion VW only causes 'NO DATA'."
+}

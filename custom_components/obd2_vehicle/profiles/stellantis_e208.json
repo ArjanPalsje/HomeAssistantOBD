@@ -1,0 +1,107 @@
+{
+  "id": "stellantis_e208",
+  "name": "Peugeot e-208 / e-2008 (Stellantis e-CMP)",
+  "manufacturers": [
+    "Peugeot"
+  ],
+  "powertrain": "electric",
+  "status": "community",
+  "detect": {
+    "wmi": [
+      "VR3",
+      "VF3"
+    ],
+    "probe": "soc",
+    "priority": 50
+  },
+  "init": [
+    "ATSP6",
+    "ATST96"
+  ],
+  "requests": [
+    {
+      "id": "soc",
+      "request": "22D410",
+      "init": [
+        "ATSH6B4",
+        "ATFCSH6B4",
+        "ATFCSD300000",
+        "ATFCSM1",
+        "ATCRA694"
+      ],
+      "rate": "fast",
+      "values": [
+        {
+          "key": "hv_soc",
+          "formula": "[B4:B5]/512",
+          "name": "HV battery state of charge (BMS)",
+          "names": {
+            "nl": "HV-accu laadtoestand (BMS)"
+          },
+          "unit": "%",
+          "device_class": "battery",
+          "precision": 1,
+          "category": "ev"
+        }
+      ]
+    },
+    {
+      "id": "voltage",
+      "request": "22D815",
+      "init": [
+        "ATSH6B4",
+        "ATFCSH6B4",
+        "ATFCSD300000",
+        "ATFCSM1",
+        "ATCRA694"
+      ],
+      "rate": "fast",
+      "values": [
+        {
+          "key": "hv_voltage",
+          "formula": "[B4:B5]/16",
+          "name": "HV battery voltage",
+          "names": {
+            "nl": "HV-accu spanning"
+          },
+          "unit": "V",
+          "device_class": "voltage",
+          "precision": 1,
+          "realtime": true,
+          "category": "ev"
+        }
+      ]
+    },
+    {
+      "id": "soh",
+      "request": "22D860",
+      "init": [
+        "ATSH6B4",
+        "ATFCSH6B4",
+        "ATFCSD300000",
+        "ATFCSM1",
+        "ATCRA694"
+      ],
+      "rate": "slow",
+      "values": [
+        {
+          "key": "hv_soh",
+          "formula": "[B5:B6]/16",
+          "name": "HV battery state of health",
+          "names": {
+            "nl": "HV-accu gezondheid (SOH)"
+          },
+          "unit": "%",
+          "precision": 1,
+          "icon": "mdi:battery-heart-variant",
+          "category": "ev"
+        }
+      ]
+    }
+  ],
+  "sources": [
+    "https://github.com/meatpiHQ/wican-fw/blob/main/vehicle_profiles/peugeot/e-208.json",
+    "https://github.com/nickn17/evDash/blob/master/src/CarPeugeotE208.cpp"
+  ],
+  "notes": "BMS at 6B4/694. SOC, SOH and voltage agree between WiCAN and evDash. Other e-CMP vehicles (Opel Corsa-e, e-2008) probably use the same BMS but are unverified."
+}

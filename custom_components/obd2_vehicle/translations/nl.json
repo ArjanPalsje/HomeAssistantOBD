@@ -1,0 +1,384 @@
+{
+  "config": {
+    "flow_title": "{name}",
+    "step": {
+      "user": {
+        "title": "OBD2-dongle toevoegen",
+        "description": "Elke dongle hoort bij één voertuig. Voeg de integratie opnieuw toe voor elke extra dongle/auto.",
+        "menu_options": {
+          "pick_bluetooth": "Bluetooth LE-dongle (bijv. Vgate iCar Pro 2S)",
+          "tcp": "Wi-Fi-dongle (TCP)",
+          "simulator": "Simulator (testen zonder auto)"
+        }
+      },
+      "pick_bluetooth": {
+        "title": "Kies Bluetooth-dongle",
+        "description": "Apparaten met ★ zijn herkende OBD2-dongles. De Vgate iCar Pro 2S heet 'IOS-Vlink'. Al gekoppelde dongles worden niet getoond. Zet het contact aan om de dongle te wekken als hij ontbreekt.",
+        "data": {
+          "address": "Dongle"
+        }
+      },
+      "bluetooth_confirm": {
+        "title": "OBD2-dongle gevonden",
+        "description": "{name} ({model}) instellen?"
+      },
+      "tcp": {
+        "title": "Wi-Fi OBD2-dongle",
+        "data": {
+          "host": "Host",
+          "port": "Poort"
+        }
+      },
+      "simulator": {
+        "title": "Simulator",
+        "data": {
+          "sim_vehicle": "Gesimuleerd voertuig"
+        }
+      },
+      "vehicle": {
+        "title": "Voertuig",
+        "description": "De verbindingstest controleert alleen de dongle, niet het voertuig. Bij 'Automatisch' wordt het profiel op basis van het VIN gekozen; generieke OBD2 werkt altijd.",
+        "data": {
+          "vehicle_name": "Voertuignaam",
+          "profile": "Voertuigprofiel",
+          "mode": "Uitleesmodus",
+          "skip_connection_test": "Verbindingstest overslaan"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Kan niet verbinden met de dongle. Is hij wakker en binnen bereik (en niet verbonden met een telefoon)?",
+      "not_elm327": "Het apparaat antwoordt niet als een ELM327-dongle.",
+      "unknown": "Onverwachte fout"
+    },
+    "abort": {
+      "already_configured": "Deze dongle is al gekoppeld.",
+      "already_in_progress": "Instellen is al bezig.",
+      "no_devices_found": "Geen nieuwe Bluetooth-apparaten gevonden. Wek de dongle (contact aan) en probeer opnieuw."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "OBD2-voertuigopties",
+        "data": {
+          "vehicle_name": "Voertuignaam",
+          "mode": "Uitleesmodus",
+          "profile": "Voertuigprofiel",
+          "live_interval": "Live-interval",
+          "charging_interval": "Interval tijdens laden",
+          "parked_interval": "Interval geparkeerd met contact aan",
+          "probe_interval": "Controle-interval slapend voertuig (0 = alleen bij aankomst)",
+          "full_read_interval": "Interval volledige uitlezing (trage waarden, foutcodes)",
+          "categories": "Sensorgroepen",
+          "advanced_diagnostics": "Geavanceerde diagnostiek (permanente foutcodes, freeze frame)",
+          "log_traffic": "Ruwe OBD-communicatie loggen (debuglog)",
+          "command_timeout": "Timeout per commando"
+        },
+        "data_description": {
+          "probe_interval": "Elk verzoek kan regeleenheden van een geparkeerd voertuig wekken. Houd dit lang of 0.",
+          "live_interval": "Gebruikt tijdens rijden / in live-modus.",
+          "categories": "Losse entiteiten kun je ook uitschakelen bij de entiteitsinstellingen."
+        }
+      }
+    }
+  },
+  "selector": {
+    "mode": {
+      "options": {
+        "snapshot": "Snapshot – eenmalig uitlezen na aankomst",
+        "live": "Live – continu uitlezen zolang het voertuig antwoordt",
+        "smart": "Slim – automatisch (aanbevolen)"
+      }
+    },
+    "categories": {
+      "options": {
+        "general": "Algemeen (brandstof, snelheid, km-stand, MIL)",
+        "engine": "Motor",
+        "emissions": "Emissies / brandstofcorrecties",
+        "ev": "Elektrisch / hybride",
+        "manufacturer": "Merkspecifiek (profiel)"
+      }
+    },
+    "sim_vehicle": {
+      "options": {
+        "combustion": "Benzineauto",
+        "electric": "Elektrische auto (Hyundai/Kia-profiel)"
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "dtc_count_ecu": {
+        "name": "Aantal foutcodes (volgens ECU)"
+      },
+      "engine_load": {
+        "name": "Motorbelasting"
+      },
+      "coolant_temp": {
+        "name": "Koelvloeistoftemperatuur"
+      },
+      "short_fuel_trim_1": {
+        "name": "Korte brandstofcorrectie bank 1"
+      },
+      "long_fuel_trim_1": {
+        "name": "Lange brandstofcorrectie bank 1"
+      },
+      "short_fuel_trim_2": {
+        "name": "Korte brandstofcorrectie bank 2"
+      },
+      "long_fuel_trim_2": {
+        "name": "Lange brandstofcorrectie bank 2"
+      },
+      "fuel_pressure": {
+        "name": "Brandstofdruk"
+      },
+      "intake_pressure": {
+        "name": "Inlaatspruitstukdruk"
+      },
+      "rpm": {
+        "name": "Toerental"
+      },
+      "speed": {
+        "name": "Snelheid"
+      },
+      "timing_advance": {
+        "name": "Ontstekingsvervroeging"
+      },
+      "intake_temp": {
+        "name": "Inlaatluchttemperatuur"
+      },
+      "maf": {
+        "name": "Luchtmassameting (MAF)"
+      },
+      "throttle_position": {
+        "name": "Gasklepstand"
+      },
+      "run_time": {
+        "name": "Looptijd sinds motorstart"
+      },
+      "distance_with_mil": {
+        "name": "Afstand met storingslampje aan"
+      },
+      "fuel_rail_pressure": {
+        "name": "Brandstofraildruk"
+      },
+      "commanded_egr": {
+        "name": "Gevraagde EGR"
+      },
+      "fuel_level": {
+        "name": "Brandstofniveau"
+      },
+      "warmups_since_clear": {
+        "name": "Opwarmcycli sinds wissen codes"
+      },
+      "distance_since_clear": {
+        "name": "Afstand sinds wissen codes"
+      },
+      "barometric_pressure": {
+        "name": "Barometrische druk"
+      },
+      "catalyst_temp_b1s1": {
+        "name": "Katalysatortemperatuur bank 1 sensor 1"
+      },
+      "control_module_voltage": {
+        "name": "Boordspanning ECU (12V-systeem)"
+      },
+      "absolute_load": {
+        "name": "Absolute belasting"
+      },
+      "commanded_lambda": {
+        "name": "Gevraagde lambda"
+      },
+      "relative_throttle": {
+        "name": "Relatieve gasklepstand"
+      },
+      "ambient_temp": {
+        "name": "Buitentemperatuur"
+      },
+      "accelerator_pedal_d": {
+        "name": "Gaspedaalpositie D"
+      },
+      "accelerator_pedal_e": {
+        "name": "Gaspedaalpositie E"
+      },
+      "commanded_throttle": {
+        "name": "Gevraagde gasklepstand"
+      },
+      "time_with_mil": {
+        "name": "Looptijd met storingslampje aan"
+      },
+      "time_since_clear": {
+        "name": "Tijd sinds wissen codes"
+      },
+      "fuel_type": {
+        "name": "Brandstoftype",
+        "state": {
+          "not_available": "Niet beschikbaar",
+          "gasoline": "Benzine",
+          "methanol": "Methanol",
+          "ethanol": "Ethanol",
+          "diesel": "Diesel",
+          "lpg": "LPG",
+          "cng": "CNG",
+          "propane": "Propaan",
+          "electric": "Elektrisch",
+          "bifuel_gasoline": "Bi-fuel (benzine)",
+          "bifuel_methanol": "Bi-fuel (methanol)",
+          "bifuel_ethanol": "Bi-fuel (ethanol)",
+          "bifuel_lpg": "Bi-fuel (LPG)",
+          "bifuel_cng": "Bi-fuel (CNG)",
+          "bifuel_propane": "Bi-fuel (propaan)",
+          "bifuel_electricity": "Bi-fuel (elektrisch)",
+          "bifuel_electric_combustion": "Bi-fuel (elektrisch + verbranding)",
+          "hybrid_gasoline": "Hybride benzine",
+          "hybrid_ethanol": "Hybride ethanol",
+          "hybrid_diesel": "Hybride diesel",
+          "hybrid_electric": "Hybride elektrisch",
+          "hybrid_electric_combustion": "Hybride (elektrisch + verbranding)",
+          "hybrid_regenerative": "Hybride regeneratief",
+          "bifuel_diesel": "Bi-fuel (diesel)"
+        }
+      },
+      "ethanol_percent": {
+        "name": "Ethanolpercentage"
+      },
+      "relative_accelerator": {
+        "name": "Relatieve gaspedaalpositie"
+      },
+      "hybrid_battery_remaining": {
+        "name": "Hybride/EV-accupakket resterend"
+      },
+      "oil_temp": {
+        "name": "Motorolietemperatuur"
+      },
+      "fuel_rate": {
+        "name": "Brandstofverbruik (debiet)"
+      },
+      "driver_demand_torque": {
+        "name": "Gevraagd motorkoppel"
+      },
+      "actual_torque_pct": {
+        "name": "Actueel motorkoppel"
+      },
+      "reference_torque": {
+        "name": "Referentiekoppel motor"
+      },
+      "odometer": {
+        "name": "Kilometerstand"
+      },
+      "engine_torque": {
+        "name": "Motorkoppel"
+      },
+      "connection_state": {
+        "name": "Verbindingsstatus",
+        "state": {
+          "not_in_range": "Niet binnen bereik",
+          "idle": "Inactief",
+          "connecting": "Verbinden",
+          "reading": "Uitlezen",
+          "connected": "Verbonden",
+          "vehicle_off": "Voertuig uit / reageert niet",
+          "error": "Fout"
+        }
+      },
+      "last_read": {
+        "name": "Laatste succesvolle uitlezing"
+      },
+      "last_full_read": {
+        "name": "Laatste volledige uitlezing"
+      },
+      "last_connected": {
+        "name": "Laatste verbinding"
+      },
+      "adapter_voltage": {
+        "name": "12V-accu (gemeten door dongle)"
+      },
+      "dtc_stored": {
+        "name": "Opgeslagen foutcodes",
+        "state_attributes": {
+          "codes": {
+            "name": "Codes"
+          },
+          "freeze_frame_dtc": {
+            "name": "Freeze-frame-foutcode"
+          }
+        }
+      },
+      "dtc_pending": {
+        "name": "Pending foutcodes",
+        "state_attributes": {
+          "codes": {
+            "name": "Codes"
+          },
+          "freeze_frame_dtc": {
+            "name": "Freeze-frame-foutcode"
+          }
+        }
+      },
+      "dtc_permanent": {
+        "name": "Permanente foutcodes",
+        "state_attributes": {
+          "codes": {
+            "name": "Codes"
+          },
+          "freeze_frame_dtc": {
+            "name": "Freeze-frame-foutcode"
+          }
+        }
+      },
+      "vin": {
+        "name": "VIN (chassisnummer)"
+      },
+      "protocol": {
+        "name": "OBD-protocol"
+      },
+      "adapter": {
+        "name": "Dongle"
+      },
+      "vehicle_profile": {
+        "name": "Voertuigprofiel"
+      },
+      "supported_pids": {
+        "name": "Ondersteunde PID's"
+      },
+      "last_error": {
+        "name": "Laatste fout"
+      },
+      "rssi": {
+        "name": "Signaalsterkte"
+      }
+    },
+    "binary_sensor": {
+      "mil_on": {
+        "name": "Storingslampje (MIL)"
+      },
+      "adapter_present": {
+        "name": "Dongle binnen bereik"
+      },
+      "connected": {
+        "name": "Verbonden"
+      },
+      "vehicle_responding": {
+        "name": "Voertuig reageert"
+      },
+      "engine_running": {
+        "name": "Motor draait"
+      },
+      "fault_codes_present": {
+        "name": "Foutcodes aanwezig"
+      }
+    },
+    "button": {
+      "read_now": {
+        "name": "Nu volledig uitlezen"
+      },
+      "reconnect": {
+        "name": "Opnieuw verbinden"
+      },
+      "reidentify": {
+        "name": "Voertuig opnieuw identificeren"
+      }
+    }
+  }
+}

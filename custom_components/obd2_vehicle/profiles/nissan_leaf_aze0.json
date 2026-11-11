@@ -1,0 +1,165 @@
+{
+  "id": "nissan_leaf_aze0",
+  "name": "Nissan Leaf AZE0 (2013–2017)",
+  "manufacturers": [
+    "Nissan"
+  ],
+  "powertrain": "electric",
+  "status": "experimental",
+  "detect": {
+    "wmi": [
+      "SJN",
+      "JN1",
+      "VSK"
+    ],
+    "probe": "lbc",
+    "priority": 40
+  },
+  "init": [
+    "ATSP6",
+    "ATST96",
+    "ATFCSH79B",
+    "ATFCSD300000",
+    "ATFCSM1"
+  ],
+  "requests": [
+    {
+      "id": "lbc",
+      "request": "2101",
+      "init": [
+        "ATSH79B",
+        "ATFCSH79B",
+        "ATCRA7BB"
+      ],
+      "rate": "fast",
+      "values": [
+        {
+          "key": "hv_soc",
+          "formula": "[B37:B39]/10000",
+          "name": "HV battery state of charge (BMS)",
+          "names": {
+            "nl": "HV-accu laadtoestand (BMS)"
+          },
+          "unit": "%",
+          "device_class": "battery",
+          "precision": 1,
+          "category": "ev"
+        },
+        {
+          "key": "hv_voltage",
+          "formula": "[B25:B26]/100",
+          "name": "HV battery voltage",
+          "names": {
+            "nl": "HV-accu spanning"
+          },
+          "unit": "V",
+          "device_class": "voltage",
+          "precision": 1,
+          "realtime": true,
+          "category": "ev"
+        },
+        {
+          "key": "hv_current",
+          "formula": "(0-[S11:S14])/1024",
+          "name": "HV battery current",
+          "names": {
+            "nl": "HV-accu stroom"
+          },
+          "unit": "A",
+          "device_class": "current",
+          "precision": 1,
+          "realtime": true,
+          "category": "ev"
+        },
+        {
+          "key": "aux_battery_voltage",
+          "formula": "[B27:B28]/1000",
+          "name": "12 V battery voltage (vehicle)",
+          "names": {
+            "nl": "12V-accu spanning (voertuig)"
+          },
+          "unit": "V",
+          "device_class": "voltage",
+          "precision": 2,
+          "realtime": true,
+          "category": "ev"
+        }
+      ]
+    },
+    {
+      "id": "lbc_temp",
+      "request": "2104",
+      "init": [
+        "ATSH79B",
+        "ATFCSH79B",
+        "ATCRA7BB"
+      ],
+      "rate": "slow",
+      "values": [
+        {
+          "key": "hv_temp_1",
+          "formula": "S6",
+          "name": "HV battery temperature 1",
+          "names": {
+            "nl": "HV-accu temperatuur 1"
+          },
+          "unit": "°C",
+          "device_class": "temperature",
+          "category": "ev"
+        },
+        {
+          "key": "hv_temp_2",
+          "formula": "S10",
+          "name": "HV battery temperature 2",
+          "names": {
+            "nl": "HV-accu temperatuur 2"
+          },
+          "unit": "°C",
+          "device_class": "temperature",
+          "category": "ev"
+        },
+        {
+          "key": "hv_temp_3",
+          "formula": "S13",
+          "name": "HV battery temperature 3",
+          "names": {
+            "nl": "HV-accu temperatuur 3"
+          },
+          "unit": "°C",
+          "device_class": "temperature",
+          "category": "ev"
+        },
+        {
+          "key": "hv_temp_4",
+          "formula": "S17",
+          "name": "HV battery temperature 4",
+          "names": {
+            "nl": "HV-accu temperatuur 4"
+          },
+          "unit": "°C",
+          "device_class": "temperature",
+          "category": "ev"
+        }
+      ]
+    }
+  ],
+  "derived": [
+    {
+      "key": "hv_power",
+      "formula": "hv_voltage*hv_current/1000",
+      "name": "HV battery power",
+      "names": {
+        "nl": "HV-accu vermogen"
+      },
+      "unit": "kW",
+      "device_class": "power",
+      "precision": 2,
+      "realtime": true,
+      "category": "ev"
+    }
+  ],
+  "sources": [
+    "https://github.com/meatpiHQ/wican-fw/blob/main/vehicle_profiles/nissan/leaf-aze0.json"
+  ],
+  "notes": "Li-ion Battery Controller (79B/7BB). Single source (WiCAN); SOH formula omitted because its meaning is unclear. ZE1 (2018+) needs broadcast monitoring for some values and is not supported. Not validated on a vehicle."
+}

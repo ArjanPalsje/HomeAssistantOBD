@@ -1,0 +1,384 @@
+{
+  "config": {
+    "flow_title": "{name}",
+    "step": {
+      "user": {
+        "title": "Add OBD2 adapter",
+        "description": "Each adapter belongs to one vehicle. Add the integration again for every additional adapter/vehicle.",
+        "menu_options": {
+          "pick_bluetooth": "Bluetooth LE adapter (e.g. Vgate iCar Pro 2S)",
+          "tcp": "Wi-Fi adapter (TCP)",
+          "simulator": "Simulator (test without vehicle)"
+        }
+      },
+      "pick_bluetooth": {
+        "title": "Choose Bluetooth adapter",
+        "description": "Devices marked ★ are recognised OBD2 adapters. The Vgate iCar Pro 2S advertises as 'IOS-Vlink'. Already configured adapters are hidden. Turn the ignition on to wake the adapter if it is missing.",
+        "data": {
+          "address": "Adapter"
+        }
+      },
+      "bluetooth_confirm": {
+        "title": "OBD2 adapter found",
+        "description": "Set up {name} ({model})?"
+      },
+      "tcp": {
+        "title": "Wi-Fi OBD2 adapter",
+        "data": {
+          "host": "Host",
+          "port": "Port"
+        }
+      },
+      "simulator": {
+        "title": "Simulator",
+        "data": {
+          "sim_vehicle": "Simulated vehicle"
+        }
+      },
+      "vehicle": {
+        "title": "Vehicle",
+        "description": "The connection test only checks the adapter, not the vehicle. With 'Automatic' the profile is chosen from the VIN; generic OBD2 always works.",
+        "data": {
+          "vehicle_name": "Vehicle name",
+          "profile": "Vehicle profile",
+          "mode": "Read mode",
+          "skip_connection_test": "Skip connection test"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Cannot connect to the adapter. Is it awake and in range (and not connected to a phone)?",
+      "not_elm327": "The device does not answer like an ELM327 adapter.",
+      "unknown": "Unexpected error"
+    },
+    "abort": {
+      "already_configured": "This adapter is already configured.",
+      "already_in_progress": "Setup is already in progress.",
+      "no_devices_found": "No new Bluetooth devices found. Wake the adapter (ignition on) and try again."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "OBD2 vehicle options",
+        "data": {
+          "vehicle_name": "Vehicle name",
+          "mode": "Read mode",
+          "profile": "Vehicle profile",
+          "live_interval": "Live interval",
+          "charging_interval": "Interval while charging",
+          "parked_interval": "Interval while parked with ignition on",
+          "probe_interval": "Wake-up check interval (0 = only on arrival)",
+          "full_read_interval": "Full read interval (slow values, fault codes)",
+          "categories": "Sensor groups",
+          "advanced_diagnostics": "Advanced diagnostics (permanent DTCs, freeze frame)",
+          "log_traffic": "Log raw OBD traffic (debug log)",
+          "command_timeout": "Command timeout"
+        },
+        "data_description": {
+          "probe_interval": "Every request may wake control units of a parked vehicle. Keep this long or 0.",
+          "live_interval": "Used while driving / in live mode.",
+          "categories": "Individual entities can also be disabled in the entity settings."
+        }
+      }
+    }
+  },
+  "selector": {
+    "mode": {
+      "options": {
+        "snapshot": "Snapshot – read once after arrival",
+        "live": "Live – read continuously while the vehicle answers",
+        "smart": "Smart – automatic (recommended)"
+      }
+    },
+    "categories": {
+      "options": {
+        "general": "General (fuel, speed, odometer, MIL)",
+        "engine": "Engine",
+        "emissions": "Emissions / fuel trims",
+        "ev": "Electric / hybrid",
+        "manufacturer": "Manufacturer specific (profile)"
+      }
+    },
+    "sim_vehicle": {
+      "options": {
+        "combustion": "Petrol car",
+        "electric": "Electric car (Hyundai/Kia profile)"
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "dtc_count_ecu": {
+        "name": "DTC count (reported by ECU)"
+      },
+      "engine_load": {
+        "name": "Engine load"
+      },
+      "coolant_temp": {
+        "name": "Coolant temperature"
+      },
+      "short_fuel_trim_1": {
+        "name": "Short term fuel trim bank 1"
+      },
+      "long_fuel_trim_1": {
+        "name": "Long term fuel trim bank 1"
+      },
+      "short_fuel_trim_2": {
+        "name": "Short term fuel trim bank 2"
+      },
+      "long_fuel_trim_2": {
+        "name": "Long term fuel trim bank 2"
+      },
+      "fuel_pressure": {
+        "name": "Fuel pressure"
+      },
+      "intake_pressure": {
+        "name": "Intake manifold pressure"
+      },
+      "rpm": {
+        "name": "Engine speed"
+      },
+      "speed": {
+        "name": "Vehicle speed"
+      },
+      "timing_advance": {
+        "name": "Timing advance"
+      },
+      "intake_temp": {
+        "name": "Intake air temperature"
+      },
+      "maf": {
+        "name": "Mass air flow"
+      },
+      "throttle_position": {
+        "name": "Throttle position"
+      },
+      "run_time": {
+        "name": "Run time since engine start"
+      },
+      "distance_with_mil": {
+        "name": "Distance travelled with MIL on"
+      },
+      "fuel_rail_pressure": {
+        "name": "Fuel rail gauge pressure"
+      },
+      "commanded_egr": {
+        "name": "Commanded EGR"
+      },
+      "fuel_level": {
+        "name": "Fuel level"
+      },
+      "warmups_since_clear": {
+        "name": "Warm-ups since codes cleared"
+      },
+      "distance_since_clear": {
+        "name": "Distance since codes cleared"
+      },
+      "barometric_pressure": {
+        "name": "Barometric pressure"
+      },
+      "catalyst_temp_b1s1": {
+        "name": "Catalyst temperature bank 1 sensor 1"
+      },
+      "control_module_voltage": {
+        "name": "Control module voltage (12 V system)"
+      },
+      "absolute_load": {
+        "name": "Absolute load"
+      },
+      "commanded_lambda": {
+        "name": "Commanded air-fuel equivalence ratio"
+      },
+      "relative_throttle": {
+        "name": "Relative throttle position"
+      },
+      "ambient_temp": {
+        "name": "Ambient air temperature"
+      },
+      "accelerator_pedal_d": {
+        "name": "Accelerator pedal position D"
+      },
+      "accelerator_pedal_e": {
+        "name": "Accelerator pedal position E"
+      },
+      "commanded_throttle": {
+        "name": "Commanded throttle actuator"
+      },
+      "time_with_mil": {
+        "name": "Time run with MIL on"
+      },
+      "time_since_clear": {
+        "name": "Time since codes cleared"
+      },
+      "fuel_type": {
+        "name": "Fuel type",
+        "state": {
+          "not_available": "Not available",
+          "gasoline": "Gasoline",
+          "methanol": "Methanol",
+          "ethanol": "Ethanol",
+          "diesel": "Diesel",
+          "lpg": "LPG",
+          "cng": "CNG",
+          "propane": "Propane",
+          "electric": "Electric",
+          "bifuel_gasoline": "Bifuel gasoline",
+          "bifuel_methanol": "Bifuel methanol",
+          "bifuel_ethanol": "Bifuel ethanol",
+          "bifuel_lpg": "Bifuel LPG",
+          "bifuel_cng": "Bifuel CNG",
+          "bifuel_propane": "Bifuel propane",
+          "bifuel_electricity": "Bifuel electricity",
+          "bifuel_electric_combustion": "Bifuel electric combustion",
+          "hybrid_gasoline": "Hybrid gasoline",
+          "hybrid_ethanol": "Hybrid ethanol",
+          "hybrid_diesel": "Hybrid diesel",
+          "hybrid_electric": "Hybrid electric",
+          "hybrid_electric_combustion": "Hybrid electric combustion",
+          "hybrid_regenerative": "Hybrid regenerative",
+          "bifuel_diesel": "Bifuel diesel"
+        }
+      },
+      "ethanol_percent": {
+        "name": "Ethanol fuel percentage"
+      },
+      "relative_accelerator": {
+        "name": "Relative accelerator pedal position"
+      },
+      "hybrid_battery_remaining": {
+        "name": "Hybrid/EV battery pack remaining life"
+      },
+      "oil_temp": {
+        "name": "Engine oil temperature"
+      },
+      "fuel_rate": {
+        "name": "Engine fuel rate"
+      },
+      "driver_demand_torque": {
+        "name": "Driver demand engine torque"
+      },
+      "actual_torque_pct": {
+        "name": "Actual engine torque"
+      },
+      "reference_torque": {
+        "name": "Engine reference torque"
+      },
+      "odometer": {
+        "name": "Odometer"
+      },
+      "engine_torque": {
+        "name": "Engine torque"
+      },
+      "connection_state": {
+        "name": "Connection state",
+        "state": {
+          "not_in_range": "Not in range",
+          "idle": "Idle",
+          "connecting": "Connecting",
+          "reading": "Reading",
+          "connected": "Connected",
+          "vehicle_off": "Vehicle off / not responding",
+          "error": "Error"
+        }
+      },
+      "last_read": {
+        "name": "Last successful read"
+      },
+      "last_full_read": {
+        "name": "Last full read"
+      },
+      "last_connected": {
+        "name": "Last connection"
+      },
+      "adapter_voltage": {
+        "name": "12 V battery (measured by adapter)"
+      },
+      "dtc_stored": {
+        "name": "Stored fault codes",
+        "state_attributes": {
+          "codes": {
+            "name": "Codes"
+          },
+          "freeze_frame_dtc": {
+            "name": "Freeze frame DTC"
+          }
+        }
+      },
+      "dtc_pending": {
+        "name": "Pending fault codes",
+        "state_attributes": {
+          "codes": {
+            "name": "Codes"
+          },
+          "freeze_frame_dtc": {
+            "name": "Freeze frame DTC"
+          }
+        }
+      },
+      "dtc_permanent": {
+        "name": "Permanent fault codes",
+        "state_attributes": {
+          "codes": {
+            "name": "Codes"
+          },
+          "freeze_frame_dtc": {
+            "name": "Freeze frame DTC"
+          }
+        }
+      },
+      "vin": {
+        "name": "VIN"
+      },
+      "protocol": {
+        "name": "OBD protocol"
+      },
+      "adapter": {
+        "name": "Adapter"
+      },
+      "vehicle_profile": {
+        "name": "Vehicle profile"
+      },
+      "supported_pids": {
+        "name": "Supported PIDs"
+      },
+      "last_error": {
+        "name": "Last error"
+      },
+      "rssi": {
+        "name": "Signal strength"
+      }
+    },
+    "binary_sensor": {
+      "mil_on": {
+        "name": "Malfunction indicator lamp"
+      },
+      "adapter_present": {
+        "name": "Adapter in range"
+      },
+      "connected": {
+        "name": "Connected"
+      },
+      "vehicle_responding": {
+        "name": "Vehicle responding"
+      },
+      "engine_running": {
+        "name": "Engine running"
+      },
+      "fault_codes_present": {
+        "name": "Fault codes present"
+      }
+    },
+    "button": {
+      "read_now": {
+        "name": "Read now (full)"
+      },
+      "reconnect": {
+        "name": "Reconnect"
+      },
+      "reidentify": {
+        "name": "Identify vehicle again"
+      }
+    }
+  }
+}

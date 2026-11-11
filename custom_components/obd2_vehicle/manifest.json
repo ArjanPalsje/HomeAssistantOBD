@@ -1,0 +1,27 @@
+{
+  "domain": "obd2_vehicle",
+  "name": "OBD2 Vehicle",
+  "bluetooth": [
+    {
+      "local_name": "IOS-Vlink*",
+      "connectable": true
+    },
+    {
+      "local_name": "vLinker*",
+      "connectable": true
+    },
+    {
+      "service_uuid": "e7810a71-73ae-499d-8c15-faa9aef0c3f2",
+      "connectable": true
+    }
+  ],
+  "codeowners": [],
+  "config_flow": true,
+  "dependencies": ["bluetooth_adapters"],
+  "documentation": "https://github.com/ArjanPalsje/HomeAssistantOBD",
+  "integration_type": "device",
+  "iot_class": "local_polling",
+  "issue_tracker": "https://github.com/ArjanPalsje/HomeAssistantOBD/issues",
+  "requirements": [],
+  "version": "0.1.0"
+}

@@ -1,0 +1,115 @@
+{
+  "id": "hyundai_ioniq_28",
+  "name": "Hyundai Ioniq Electric (28 kWh, 2016–2019)",
+  "manufacturers": [
+    "Hyundai"
+  ],
+  "powertrain": "electric",
+  "status": "community",
+  "detect": {
+    "wmi": [
+      "KMH"
+    ],
+    "probe": "bms",
+    "priority": 20
+  },
+  "init": [
+    "ATST96"
+  ],
+  "requests": [
+    {
+      "id": "bms",
+      "request": "2101",
+      "init": [
+        "ATSH7E4"
+      ],
+      "rate": "fast",
+      "values": [
+        {
+          "key": "hv_soc",
+          "formula": "B09/2",
+          "name": "HV battery state of charge (BMS)",
+          "names": {
+            "nl": "HV-accu laadtoestand (BMS)"
+          },
+          "unit": "%",
+          "device_class": "battery",
+          "precision": 1,
+          "category": "ev"
+        },
+        {
+          "key": "charging",
+          "formula": "B14:7",
+          "name": "Charging",
+          "names": {
+            "nl": "Laden actief"
+          },
+          "binary": true,
+          "device_class": "battery_charging",
+          "category": "ev"
+        },
+        {
+          "key": "charging_dc",
+          "formula": "B14:6",
+          "name": "DC fast charging",
+          "names": {
+            "nl": "DC-snelladen actief"
+          },
+          "binary": true,
+          "icon": "mdi:ev-station",
+          "category": "ev"
+        },
+        {
+          "key": "charger_connected",
+          "formula": "B14:5",
+          "name": "Charger connected",
+          "names": {
+            "nl": "Lader aangesloten"
+          },
+          "binary": true,
+          "device_class": "plug",
+          "category": "ev"
+        }
+      ]
+    },
+    {
+      "id": "bms_soh",
+      "request": "2105",
+      "init": [
+        "ATSH7E4"
+      ],
+      "rate": "slow",
+      "values": [
+        {
+          "key": "hv_soc_display",
+          "formula": "B39/2",
+          "name": "HV battery state of charge (display)",
+          "names": {
+            "nl": "HV-accu laadtoestand (dashboard)"
+          },
+          "unit": "%",
+          "device_class": "battery",
+          "precision": 1,
+          "category": "ev"
+        },
+        {
+          "key": "hv_soh",
+          "formula": "[B33:B34]/10",
+          "name": "HV battery state of health",
+          "names": {
+            "nl": "HV-accu gezondheid (SOH)"
+          },
+          "unit": "%",
+          "precision": 1,
+          "icon": "mdi:battery-heart-variant",
+          "category": "ev"
+        }
+      ]
+    }
+  ],
+  "sources": [
+    "https://github.com/meatpiHQ/wican-fw/blob/main/vehicle_profiles/hyundai/ioniq-2017.json",
+    "https://github.com/nickn17/evDash/blob/master/src/CarHyundaiIoniq.cpp"
+  ],
+  "notes": "KWP2000 service 0x21 requests. Odometer omitted: WiCAN and evDash disagree on its location."
+}

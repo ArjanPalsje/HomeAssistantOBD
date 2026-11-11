@@ -1,0 +1,91 @@
+# Voorbeeldautomatiseringen voor OBD2 Vehicle.
+# Vervang de entity_id's door die van jouw voertuig (Instellingen > Apparaten > <voertuig>).
+# Entity-id's volgen de voertuignaam, bijv. "Auto" -> sensor.auto_brandstofniveau.
+
+# 1. Auto komt thuis: volledige uitlezing (de integratie doet dit in snapshot/slimme
+#    modus al automatisch; dit voorbeeld laat zien hoe je het handmatig forceert,
+#    bijvoorbeeld op basis van je eigen aanwezigheidsdetectie).
+- alias: "Auto thuis - voertuig uitlezen"
+  triggers:
+    - trigger: state
+      entity_id: binary_sensor.auto_dongle_binnen_bereik
+      to: "on"
+  actions:
+    - delay: "00:00:10"
+    - action: button.press
+      target:
+        entity_id: button.auto_nu_volledig_uitlezen
+
+# 2. Brandstofniveau onder 20 %: melding (alleen op basis van een nieuwe uitlezing)
+- alias: "Brandstof bijna op"
+  triggers:
+    - trigger: numeric_state
+      entity_id: sensor.auto_brandstofniveau
+      below: 20
+  actions:
+    - action: notify.notify
+      data:
+        title: "Brandstof"
+        message: >-
+          Brandstofniveau is {{ states('sensor.auto_brandstofniveau') }} %
+          (gemeten {{ as_timestamp(states('sensor.auto_laatste_succesvolle_uitlezing')) | timestamp_custom('%d-%m %H:%M') }}).
+
+# 3. EV komt thuis: de integratie leest de SOC automatisch; reageer op de afgeronde uitlezing.
+- alias: "EV thuis - SOC melden"
+  triggers:
+    - trigger: event
+      event_type: obd2_vehicle_read_completed
+      event_data:
+        vehicle: "Kona"
+  conditions:
+    - condition: template
+      value_template: "{{ trigger.event.data.full }}"
+  actions:
+    - action: notify.notify
+      data:
+        message: "Kona thuis: accu {{ states('sensor.kona_hv_accu_laadtoestand_bms') }} %"
+
+# 4. EV SOC onder 30 %: laadadvies
+- alias: "EV laadadvies"
+  triggers:
+    - trigger: numeric_state
+      entity_id: sensor.kona_hv_accu_laadtoestand_bms
+      below: 30
+  conditions:
+    - condition: state
+      entity_id: binary_sensor.kona_dongle_binnen_bereik
+      state: "on"
+  actions:
+    - action: notify.notify
+      data:
+        message: "De Kona staat thuis met {{ states('sensor.kona_hv_accu_laadtoestand_bms') }} %. Advies: aan de lader."
+
+# 5. Nieuwe foutcodes: notificatie met de codes
+- alias: "Voertuig foutcodes"
+  triggers:
+    - trigger: event
+      event_type: obd2_vehicle_dtc_detected
+  actions:
+    - action: notify.notify
+      data:
+        title: "Foutcode {{ trigger.event.data.vehicle }}"
+        message: "Nieuwe foutcode(s): {{ trigger.event.data.codes | join(', ') }}"
+
+# 6. Aanwezigheid: de dongle-aanwezigheid is GEEN betrouwbare locatie (de dongle
+#    slaapt na een tijd en adverteert dan niet meer). Gebruik hem alleen als
+#    aanvullend signaal, met een vertraging voor "weg".
+- alias: "Auto vertrokken (indicatief)"
+  triggers:
+    - trigger: state
+      entity_id: binary_sensor.auto_dongle_binnen_bereik
+      to: "off"
+      for: "00:10:00"
+  conditions:
+    # Alleen als de laatste uitlezing recent was (auto was dus net actief)
+    - condition: template
+      value_template: >-
+        {{ (now() - as_datetime(states('sensor.auto_laatste_succesvolle_uitlezing'))).total_seconds() < 1800 }}
+  actions:
+    - action: input_boolean.turn_off
+      target:
+        entity_id: input_boolean.auto_thuis
