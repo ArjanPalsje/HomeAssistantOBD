@@ -33,6 +33,16 @@ onafhankelijk en tegelijk. Al gekoppelde dongles worden niet meer in de keuzelij
 Wordt een dongle in een andere auto gestoken, dan detecteert de integratie het nieuwe VIN en
 bepaalt alle mogelijkheden opnieuw.
 
+## Keuze van Bluetooth-adapter / proxy
+
+Standaard kiest de Bluetooth-laag van Home Assistant (`habluetooth`) zelf het verbindingspad:
+de scanner met de beste RSSI en een vrij verbindingsslot; een meegegeven `BLEDevice` wordt daarbij
+genegeerd. Kiest de gebruiker een specifieke adapter/proxy, dan gebruikt `bluetooth_util.py` een
+subklasse van de door HA geïnstalleerde clientwrapper die alleen advertenties van die scanner
+(`source`) laat meetellen. Er is dan bewust geen terugval naar een andere adapter. Mocht een
+toekomstige HA-versie de gebruikte hook niet meer hebben, dan valt de integratie terug op
+automatische keuze en logt een waarschuwing.
+
 ## Sessieverloop
 
 ```

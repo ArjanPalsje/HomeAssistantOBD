@@ -151,10 +151,12 @@ def build(lang: str) -> dict:
         "vehicle_name": t("Vehicle name", "Voertuignaam"),
         "profile": t("Vehicle profile", "Voertuigprofiel"),
         "mode": t("Read mode", "Uitleesmodus"),
+        "bluetooth_source": t("Bluetooth adapter / proxy", "Bluetooth-adapter / proxy"),
         "skip_connection_test": t("Skip connection test", "Verbindingstest overslaan"),
     }
     options_fields = {
         "vehicle_name": vehicle_fields["vehicle_name"],
+        "bluetooth_source": vehicle_fields["bluetooth_source"],
         "mode": vehicle_fields["mode"],
         "profile": vehicle_fields["profile"],
         "live_interval": t("Live interval", "Live-interval"),
@@ -167,7 +169,12 @@ def build(lang: str) -> dict:
         "log_traffic": t("Log raw OBD traffic (debug log)", "Ruwe OBD-communicatie loggen (debuglog)"),
         "command_timeout": t("Command timeout", "Timeout per commando"),
     }
+    bt_source_desc = t(
+            "'Automatic' lets Home Assistant pick the adapter or ESPHome proxy with the best signal. Choose a specific one to always connect through it (the value behind it is the signal strength to the dongle).",
+            "Bij 'Automatisch' kiest Home Assistant de adapter of ESPHome-proxy met het beste signaal. Kies een specifieke om altijd daarlangs te verbinden (de waarde erachter is de signaalsterkte naar de dongle).",
+        )
     options_desc = {
+        "bluetooth_source": bt_source_desc,
         "probe_interval": t(
             "Every request may wake control units of a parked vehicle. Keep this long or 0.",
             "Elk verzoek kan regeleenheden van een geparkeerd voertuig wekken. Houd dit lang of 0.",
@@ -182,8 +189,8 @@ def build(lang: str) -> dict:
                 "user": {
                     "title": t("Add OBD2 adapter", "OBD2-dongle toevoegen"),
                     "description": t(
-                        "Each adapter belongs to one vehicle. Add the integration again for every additional adapter/vehicle.",
-                        "Elke dongle hoort bij één voertuig. Voeg de integratie opnieuw toe voor elke extra dongle/auto.",
+                        "⚠️ This integration is under development and is used entirely at your own risk; the author accepts no liability for any direct or indirect damage (see README). Each adapter belongs to one vehicle. Add the integration again for every additional adapter/vehicle.",
+                        "⚠️ Deze integratie is nog in ontwikkeling en gebruik is geheel op eigen risico; de auteur aanvaardt geen aansprakelijkheid voor directe of indirecte schade (zie README). Elke dongle hoort bij één voertuig. Voeg de integratie opnieuw toe voor elke extra dongle/auto.",
                     ),
                     "menu_options": {
                         "pick_bluetooth": t("Bluetooth LE adapter (e.g. Vgate iCar Pro 2S)", "Bluetooth LE-dongle (bijv. Vgate iCar Pro 2S)"),
@@ -218,10 +225,12 @@ def build(lang: str) -> dict:
                         "De verbindingstest controleert alleen de dongle, niet het voertuig. Bij 'Automatisch' wordt het profiel op basis van het VIN gekozen; generieke OBD2 werkt altijd.",
                     ),
                     "data": vehicle_fields,
+                    "data_description": {"bluetooth_source": bt_source_desc},
                 },
             },
             "error": {
                 "cannot_connect": t("Cannot connect to the adapter. Is it awake and in range (and not connected to a phone)?", "Kan niet verbinden met de dongle. Is hij wakker en binnen bereik (en niet verbonden met een telefoon)?"),
+                "not_seen_by_adapter": t("The selected Bluetooth adapter/proxy does not see this dongle at the moment. Choose another one or 'Automatic'.", "De gekozen Bluetooth-adapter/proxy ziet deze dongle op dit moment niet. Kies een andere of 'Automatisch'."),
                 "not_elm327": t("The device does not answer like an ELM327 adapter.", "Het apparaat antwoordt niet als een ELM327-dongle."),
                 "unknown": t("Unexpected error", "Onverwachte fout"),
             },

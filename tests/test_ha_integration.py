@@ -115,3 +115,33 @@ async def test_diagnostics_are_redacted(hass: HomeAssistant) -> None:
     text = str(diag)
     assert "WVWZZZAUZHW000042" not in text
     assert diag["runtime"]["vehicle"]["vin_present"] is True
+
+
+def test_pinned_client_only_uses_selected_adapter(monkeypatch: pytest.MonkeyPatch) -> None:
+    """The pinned client must hide advertisements from other adapters/proxies."""
+    from types import SimpleNamespace
+
+    import bleak_retry_connector
+
+    from custom_components.obd2_vehicle import bluetooth_util
+
+    class FakeWrapper:
+        def _async_get_best_available_backend_and_device(self, manager):  # noqa: ANN001, ANN202
+            devices = manager.async_scanner_devices_by_address("AA:BB", True)
+            return [d.scanner.source for d in devices], manager.other_attribute
+
+    monkeypatch.setattr(bleak_retry_connector, "BleakClientWithServiceCache", FakeWrapper)
+    devices = [
+        SimpleNamespace(scanner=SimpleNamespace(source="hci0")),
+        SimpleNamespace(scanner=SimpleNamespace(source="proxy-garage")),
+    ]
+    manager = SimpleNamespace(
+        async_scanner_devices_by_address=lambda address, connectable: devices,
+        other_attribute="delegated",
+    )
+    assert bluetooth_util.pinning_supported()
+    client = bluetooth_util.pinned_client_class("proxy-garage")()
+    assert client._async_get_best_available_backend_and_device(manager) == (
+        ["proxy-garage"],
+        "delegated",
+    )

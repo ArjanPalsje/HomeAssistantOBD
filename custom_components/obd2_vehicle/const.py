@@ -32,6 +32,7 @@ CONF_CATEGORIES: Final = "categories"
 CONF_ADVANCED: Final = "advanced_diagnostics"
 CONF_LOG_TRAFFIC: Final = "log_traffic"
 CONF_COMMAND_TIMEOUT: Final = "command_timeout"
+CONF_BT_SOURCE: Final = "bluetooth_source"
 
 DEFAULT_PORT: Final = 35000
 DEFAULT_MODE: Final = "smart"

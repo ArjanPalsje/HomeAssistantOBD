@@ -4,7 +4,7 @@
     "step": {
       "user": {
         "title": "Add OBD2 adapter",
-        "description": "Each adapter belongs to one vehicle. Add the integration again for every additional adapter/vehicle.",
+        "description": "⚠️ This integration is under development and is used entirely at your own risk; the author accepts no liability for any direct or indirect damage (see README). Each adapter belongs to one vehicle. Add the integration again for every additional adapter/vehicle.",
         "menu_options": {
           "pick_bluetooth": "Bluetooth LE adapter (e.g. Vgate iCar Pro 2S)",
           "tcp": "Wi-Fi adapter (TCP)",
@@ -42,12 +42,17 @@
           "vehicle_name": "Vehicle name",
           "profile": "Vehicle profile",
           "mode": "Read mode",
+          "bluetooth_source": "Bluetooth adapter / proxy",
           "skip_connection_test": "Skip connection test"
+        },
+        "data_description": {
+          "bluetooth_source": "'Automatic' lets Home Assistant pick the adapter or ESPHome proxy with the best signal. Choose a specific one to always connect through it (the value behind it is the signal strength to the dongle)."
         }
       }
     },
     "error": {
       "cannot_connect": "Cannot connect to the adapter. Is it awake and in range (and not connected to a phone)?",
+      "not_seen_by_adapter": "The selected Bluetooth adapter/proxy does not see this dongle at the moment. Choose another one or 'Automatic'.",
       "not_elm327": "The device does not answer like an ELM327 adapter.",
       "unknown": "Unexpected error"
     },
@@ -63,6 +68,7 @@
         "title": "OBD2 vehicle options",
         "data": {
           "vehicle_name": "Vehicle name",
+          "bluetooth_source": "Bluetooth adapter / proxy",
           "mode": "Read mode",
           "profile": "Vehicle profile",
           "live_interval": "Live interval",
@@ -76,6 +82,7 @@
           "command_timeout": "Command timeout"
         },
         "data_description": {
+          "bluetooth_source": "'Automatic' lets Home Assistant pick the adapter or ESPHome proxy with the best signal. Choose a specific one to always connect through it (the value behind it is the signal strength to the dongle).",
           "probe_interval": "Every request may wake control units of a parked vehicle. Keep this long or 0.",
           "live_interval": "Used while driving / in live mode.",
           "categories": "Individual entities can also be disabled in the entity settings."

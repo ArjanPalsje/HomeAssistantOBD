@@ -1,5 +1,13 @@
 # OBD2 Vehicle voor Home Assistant
 
+> [!WARNING]
+> **Deze integratie is nog in ontwikkeling (experimenteel) en is niet op echte voertuigen gevalideerd.**
+> Gebruik is volledig **op eigen risico**. De auteur is **niet aansprakelijk** voor enige directe of
+> indirecte schade of gevolgschade door het gebruik van deze integratie, waaronder – maar niet beperkt
+> tot – beschadigde of onbruikbare ("gebrickte") ECU's of regeleenheden, foutmeldingen, een lege 12V-accu,
+> storingen aan het voertuig, de dongle of Home Assistant, en de gevolgen daarvan.
+> Zie [Disclaimer](#disclaimer--aansprakelijkheid).
+
 Lees je auto automatisch uit via een Bluetooth- of Wi-Fi-OBD2-dongle zodra hij thuiskomt.
 Werkt voor benzine, diesel, hybride, plug-in-hybride en elektrische auto's. Primair ontworpen
 voor de **Vgate iCar Pro 2S**.
@@ -56,6 +64,7 @@ ESPHome-proxy met `bluetooth_proxy: active: true`) voor BLE-dongles.
 | Optie | Standaard | Uitleg |
 |---|---|---|
 | Voertuignaam | – | Naam van het apparaat |
+| Bluetooth-adapter / proxy | Automatisch | Alleen bij BLE. *Automatisch*: Home Assistant kiest de adapter of ESPHome-proxy met het beste signaal en een vrij verbindingsslot. Kies een specifieke adapter/proxy om altijd daarlangs te verbinden; achter elke optie staat hoe sterk die de dongle ontvangt. Ziet de gekozen adapter de dongle niet, dan wordt er niet verbonden (geen terugval) |
 | Uitleesmodus | Slim | zie hieronder |
 | Voertuigprofiel | Automatisch | Handmatige keuze als het VIN geen uitsluitsel geeft (bv. E-GMP met laadvlaggen) |
 | Live-interval | 15 s | Interval tijdens rijden / live-modus |
@@ -228,6 +237,31 @@ zonder auto te testen.
   EEPROM-AT-commando's zijn geblokkeerd – ook als een profiel ze zou bevatten.
 * VIN-antwoorden worden niet gelogd; diagnostiek bevat alleen een niet-omkeerbare VIN-vingerafdruk.
 * Verwijderen van de integratie verwijdert ook de opgeslagen gegevens.
+
+## Disclaimer / aansprakelijkheid
+
+**Nederlands.** Deze software is in ontwikkeling en wordt geleverd "zoals hij is", zonder enige
+garantie, uitdrukkelijk of stilzwijgend, waaronder garanties van geschiktheid voor een bepaald doel,
+correcte werking of veiligheid. Gebruik gebeurt volledig op eigen risico en eigen verantwoordelijkheid.
+De auteur en bijdragers zijn niet aansprakelijk voor enige directe, indirecte, incidentele of
+gevolgschade, van welke aard ook, voortvloeiend uit of verband houdend met het gebruik van deze
+HACS-integratie, waaronder in het bijzonder: beschadigde, onbruikbare of "gebrickte" ECU's en andere
+regeleenheden, foutcodes of waarschuwingslampjes, een ontladen of beschadigde 12V-accu, storingen of
+schade aan het voertuig, de OBD2-dongle, Bluetooth-apparatuur of Home Assistant, verlies van gegevens,
+garantieverlies, kosten van reparatie of diagnose, en elke daaruit voortvloeiende schade.
+
+Hoewel de integratie is ontworpen om uitsluitend te **lezen** (schrijf-, wis- en aanstuurcommando's
+worden geblokkeerd), kan diagnostische communicatie met een voertuig altijd onvoorziene effecten
+hebben, bijvoorbeeld door fouten in het voertuig, de dongle (goedkope klonen) of deze software.
+Gebruik de integratie niet tijdens het rijden voor veiligheidsrelevante beslissingen, en verwijder
+de dongle als je twijfelt. Raadpleeg bij twijfel je dealer of garage.
+
+**English.** This software is under development and provided "as is", without warranty of any kind.
+Use is entirely at your own risk. The author and contributors accept no liability for any direct,
+indirect, incidental or consequential damage arising from the use of this HACS integration,
+including but not limited to damaged or "bricked" ECUs/control units, fault codes, a drained 12 V
+battery, damage to the vehicle, the OBD2 adapter or Home Assistant, and any consequences thereof.
+See also the [LICENSE](LICENSE) (MIT).
 
 ## Documentatie
 

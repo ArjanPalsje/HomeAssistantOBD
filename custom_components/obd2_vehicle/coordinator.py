@@ -24,11 +24,19 @@ from homeassistant.helpers.storage import Store
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 from homeassistant.util import dt as dt_util
 
+from .bluetooth_util import (
+    AUTO_SOURCE,
+    ble_device_via_source,
+    pinned_client_class,
+    pinning_supported,
+    rssi_via_source,
+)
 from .const import (
     ARRIVAL_MIN_ABSENCE,
     CONF_ADAPTER_NAME,
     CONF_ADDRESS,
     CONF_ADVANCED,
+    CONF_BT_SOURCE,
     CONF_CATEGORIES,
     CONF_CHARGING_INTERVAL,
     CONF_COMMAND_TIMEOUT,
@@ -160,6 +168,8 @@ class OBDVehicleCoordinator(DataUpdateCoordinator[VehicleData]):
         self.advanced: bool = bool(opts.get(CONF_ADVANCED, False))
         self.log_traffic: bool = bool(opts.get(CONF_LOG_TRAFFIC, False))
         self.command_timeout = float(opts.get(CONF_COMMAND_TIMEOUT, DEFAULT_COMMAND_TIMEOUT))
+        #: Bluetooth adapter / proxy source to connect through ("auto" = best path)
+        self.bluetooth_source: str = opts.get(CONF_BT_SOURCE, AUTO_SOURCE)
 
         self.identity = VehicleIdentity()
         self.preferred_layout: str | None = None
@@ -224,7 +234,7 @@ class OBDVehicleCoordinator(DataUpdateCoordinator[VehicleData]):
             if service_info := bluetooth.async_last_service_info(
                 self.hass, self.address, connectable=True
             ):
-                self.data.rssi = service_info.rssi
+                self.data.rssi = self._rssi(service_info.rssi)
         else:
             present = True
         self._set_present(present, now, arrival=present)
@@ -257,7 +267,7 @@ class OBDVehicleCoordinator(DataUpdateCoordinator[VehicleData]):
     def _async_on_advertisement(
         self, service_info: bluetooth.BluetoothServiceInfoBleak, change: bluetooth.BluetoothChange
     ) -> None:
-        self.data.rssi = service_info.rssi
+        self.data.rssi = self._rssi(service_info.rssi)
         now = time.monotonic()
         if not self.planner.present:
             arrival = self._absent_since is None or now - self._absent_since >= ARRIVAL_MIN_ABSENCE
@@ -276,6 +286,11 @@ class OBDVehicleCoordinator(DataUpdateCoordinator[VehicleData]):
         self._absent_since = time.monotonic()
         self._set_present(False, self._absent_since, arrival=False)
         self.async_update_listeners()
+
+    def _rssi(self, fallback: int | None) -> int | None:
+        if self.bluetooth_source == AUTO_SOURCE or self.address is None:
+            return fallback
+        return rssi_via_source(self.hass, self.address, self.bluetooth_source)
 
     def _set_present(self, present: bool, now: float, *, arrival: bool) -> None:
         self.planner.present = present
@@ -357,11 +372,35 @@ class OBDVehicleCoordinator(DataUpdateCoordinator[VehicleData]):
             from .core.transport.ble import BleTransport  # bleak only needed here
 
             address = self.address
+            assert address is not None
+            source = self.bluetooth_source
+            client_class = None
+            if source != AUTO_SOURCE:
+                if pinning_supported():
+                    client_class = pinned_client_class(source)
+                else:
+                    _LOGGER.warning(
+                        "%s: this Home Assistant version does not allow choosing the "
+                        "Bluetooth adapter; using automatic selection",
+                        self.vehicle_name,
+                    )
+                    source = AUTO_SOURCE
 
             def provider():  # noqa: ANN202 - BLEDevice | None
+                if source != AUTO_SOURCE:
+                    return ble_device_via_source(self.hass, address, source)
                 return bluetooth.async_ble_device_from_address(self.hass, address, connectable=True)
 
-            return BleTransport(provider, self.vehicle_name, preferred_layout=self.preferred_layout)
+            if source != AUTO_SOURCE and provider() is None:
+                raise TransportUnavailable(
+                    f"{self.vehicle_name} is not seen by the selected Bluetooth adapter/proxy {source}"
+                )
+            return BleTransport(
+                provider,
+                self.vehicle_name,
+                preferred_layout=self.preferred_layout,
+                client_class=client_class,
+            )
         if self.connection == CONN_TCP:
             from .core.transport.tcp import TcpTransport
 
@@ -679,6 +718,9 @@ class OBDVehicleCoordinator(DataUpdateCoordinator[VehicleData]):
                 "protocol": self.data.protocol,
                 "adapter": self.data.adapter_identity,
                 "preferred_gatt_layout": self.preferred_layout,
+                "bluetooth_source": (
+                    "auto" if self.bluetooth_source == AUTO_SOURCE else "selected adapter/proxy"
+                ),
             },
             "values": {k: v for k, v in self.data.values.items()},
             "unavailable_reasons": self.unavailable,

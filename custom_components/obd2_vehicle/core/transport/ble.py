@@ -17,10 +17,8 @@ from bleak import BleakClient
 from bleak.backends.characteristic import BleakGATTCharacteristic
 from bleak.backends.device import BLEDevice
 from bleak.exc import BleakError
-from bleak_retry_connector import (
-    BleakClientWithServiceCache,
-    establish_connection,
-)
+import bleak_retry_connector
+from bleak_retry_connector import establish_connection
 
 from ..adapters import GATT_LAYOUTS, IGNORED_SERVICES
 from ..exceptions import TransportError, TransportUnavailable
@@ -53,11 +51,14 @@ class BleTransport(Transport):
         name: str,
         *,
         preferred_layout: str | None = None,
+        client_class: type[BleakClient] | None = None,
     ) -> None:
         super().__init__()
         self._device_provider = device_provider
         self._name = name
         self._preferred = preferred_layout
+        #: Custom client class, e.g. one pinned to a specific Bluetooth adapter/proxy.
+        self._client_class = client_class
         self._client: BleakClient | None = None
         self._layouts: list[ResolvedLayout] = []
         self._active: int = -1
@@ -88,7 +89,9 @@ class BleTransport(Transport):
         try:
             async with asyncio.timeout(timeout):
                 client = await establish_connection(
-                    BleakClientWithServiceCache,
+                    # Resolved at call time: Home Assistant replaces this class with
+                    # its own wrapper that routes through local adapters and proxies.
+                    self._client_class or bleak_retry_connector.BleakClientWithServiceCache,
                     device,
                     self._name,
                     disconnected_callback=self._on_disconnected,

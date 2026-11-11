@@ -20,11 +20,19 @@ from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers import selector
 
 from . import async_get_registry
+from .bluetooth_util import (
+    AUTO_SOURCE,
+    adapter_options,
+    ble_device_via_source,
+    pinned_client_class,
+    pinning_supported,
+)
 from .const import (
     ALL_CATEGORIES,
     CONF_ADAPTER_NAME,
     CONF_ADDRESS,
     CONF_ADVANCED,
+    CONF_BT_SOURCE,
     CONF_CATEGORIES,
     CONF_CHARGING_INTERVAL,
     CONF_COMMAND_TIMEOUT,
@@ -89,6 +97,29 @@ async def _test_adapter(hass: HomeAssistant, transport: Transport) -> None:
     finally:
         with contextlib.suppress(Exception):
             await transport.disconnect()
+
+
+def _bt_source_selector(
+    hass: HomeAssistant, address: str | None, current: str = AUTO_SOURCE
+) -> selector.SelectSelector:
+    """Choice of Bluetooth adapter / ESPHome proxy (with RSSI to the dongle)."""
+    auto_label = (
+        "Automatisch (beste signaal met vrij verbindingsslot)"
+        if hass.config.language.startswith("nl")
+        else "Automatic (best signal with a free connection slot)"
+    )
+    options = [selector.SelectOptionDict(value=AUTO_SOURCE, label=auto_label)]
+    options.extend(
+        selector.SelectOptionDict(value=o["value"], label=o["label"])
+        for o in adapter_options(hass, address)
+    )
+    if current not in {o["value"] for o in options}:
+        # Previously chosen adapter/proxy is offline: keep it selectable
+        missing = "niet beschikbaar" if hass.config.language.startswith("nl") else "unavailable"
+        options.append(selector.SelectOptionDict(value=current, label=f"{current} ({missing})"))
+    return selector.SelectSelector(
+        selector.SelectSelectorConfig(options=options, mode=selector.SelectSelectorMode.DROPDOWN)
+    )
 
 
 def _mode_selector() -> selector.SelectSelector:
@@ -260,7 +291,9 @@ class OBDVehicleConfigFlow(ConfigFlow, domain=DOMAIN):
         errors: dict[str, str] = {}
         if user_input is not None:
             if not user_input.get(CONF_SKIP_TEST) and self._data[CONF_CONNECTION] != CONN_SIMULATOR:
-                errors = await self._async_test_connection()
+                errors = await self._async_test_connection(
+                    user_input.get(CONF_BT_SOURCE, AUTO_SOURCE)
+                )
             if not errors:
                 return self.async_create_entry(
                     title=user_input[CONF_VEHICLE_NAME],
@@ -269,6 +302,7 @@ class OBDVehicleConfigFlow(ConfigFlow, domain=DOMAIN):
                         CONF_MODE: user_input[CONF_MODE],
                         CONF_PROFILE: user_input[CONF_PROFILE],
                         CONF_CATEGORIES: DEFAULT_CATEGORIES,
+                        CONF_BT_SOURCE: user_input.get(CONF_BT_SOURCE, AUTO_SOURCE),
                     },
                 )
         default_name = {
@@ -281,21 +315,31 @@ class OBDVehicleConfigFlow(ConfigFlow, domain=DOMAIN):
             vol.Required(CONF_PROFILE, default=AUTO_PROFILE): await _profile_selector(self.hass),
             vol.Required(CONF_MODE, default=DEFAULT_MODE): _mode_selector(),
         }
+        if self._data[CONF_CONNECTION] == CONN_BLE:
+            schema[vol.Required(CONF_BT_SOURCE, default=AUTO_SOURCE)] = _bt_source_selector(
+                self.hass, self._data.get(CONF_ADDRESS)
+            )
         if self._data[CONF_CONNECTION] != CONN_SIMULATOR:
             schema[vol.Optional(CONF_SKIP_TEST, default=False)] = bool
         return self.async_show_form(
             step_id="vehicle", data_schema=vol.Schema(schema), errors=errors
         )
 
-    async def _async_test_connection(self) -> dict[str, str]:
+    async def _async_test_connection(self, source: str = AUTO_SOURCE) -> dict[str, str]:
         connection = self._data[CONF_CONNECTION]
         if connection == CONN_BLE:
             from .core.transport.ble import BleTransport
 
             address = self._data[CONF_ADDRESS]
+            pinned = source != AUTO_SOURCE and pinning_supported()
+            if pinned and ble_device_via_source(self.hass, address, source) is None:
+                return {"base": "not_seen_by_adapter"}
             transport: Transport = BleTransport(
-                lambda: bluetooth.async_ble_device_from_address(self.hass, address, connectable=True),
+                (lambda: ble_device_via_source(self.hass, address, source))
+                if pinned
+                else (lambda: bluetooth.async_ble_device_from_address(self.hass, address, connectable=True)),
                 self._data.get(CONF_ADAPTER_NAME) or address,
+                client_class=pinned_client_class(source) if pinned else None,
             )
         else:
             from .core.transport.tcp import TcpTransport
@@ -340,11 +384,19 @@ class OBDVehicleOptionsFlow(OptionsFlow):
                 )
             )
 
+        fields: dict[Any, Any] = {}
+        if entry.data.get(CONF_CONNECTION) == CONN_BLE:
+            fields[
+                vol.Required(CONF_BT_SOURCE, default=opts.get(CONF_BT_SOURCE, AUTO_SOURCE))
+            ] = _bt_source_selector(
+                self.hass, entry.data.get(CONF_ADDRESS), opts.get(CONF_BT_SOURCE, AUTO_SOURCE)
+            )
         schema = vol.Schema(
             {
                 vol.Required(
                     CONF_VEHICLE_NAME, default=entry.data.get(CONF_VEHICLE_NAME, entry.title)
                 ): str,
+                **fields,
                 vol.Required(CONF_MODE, default=opts.get(CONF_MODE, DEFAULT_MODE)): _mode_selector(),
                 vol.Required(
                     CONF_PROFILE, default=opts.get(CONF_PROFILE, AUTO_PROFILE)

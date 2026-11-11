@@ -4,7 +4,7 @@
     "step": {
       "user": {
         "title": "OBD2-dongle toevoegen",
-        "description": "Elke dongle hoort bij één voertuig. Voeg de integratie opnieuw toe voor elke extra dongle/auto.",
+        "description": "⚠️ Deze integratie is nog in ontwikkeling en gebruik is geheel op eigen risico; de auteur aanvaardt geen aansprakelijkheid voor directe of indirecte schade (zie README). Elke dongle hoort bij één voertuig. Voeg de integratie opnieuw toe voor elke extra dongle/auto.",
         "menu_options": {
           "pick_bluetooth": "Bluetooth LE-dongle (bijv. Vgate iCar Pro 2S)",
           "tcp": "Wi-Fi-dongle (TCP)",
@@ -42,12 +42,17 @@
           "vehicle_name": "Voertuignaam",
           "profile": "Voertuigprofiel",
           "mode": "Uitleesmodus",
+          "bluetooth_source": "Bluetooth-adapter / proxy",
           "skip_connection_test": "Verbindingstest overslaan"
+        },
+        "data_description": {
+          "bluetooth_source": "Bij 'Automatisch' kiest Home Assistant de adapter of ESPHome-proxy met het beste signaal. Kies een specifieke om altijd daarlangs te verbinden (de waarde erachter is de signaalsterkte naar de dongle)."
         }
       }
     },
     "error": {
       "cannot_connect": "Kan niet verbinden met de dongle. Is hij wakker en binnen bereik (en niet verbonden met een telefoon)?",
+      "not_seen_by_adapter": "De gekozen Bluetooth-adapter/proxy ziet deze dongle op dit moment niet. Kies een andere of 'Automatisch'.",
       "not_elm327": "Het apparaat antwoordt niet als een ELM327-dongle.",
       "unknown": "Onverwachte fout"
     },
@@ -63,6 +68,7 @@
         "title": "OBD2-voertuigopties",
         "data": {
           "vehicle_name": "Voertuignaam",
+          "bluetooth_source": "Bluetooth-adapter / proxy",
           "mode": "Uitleesmodus",
           "profile": "Voertuigprofiel",
           "live_interval": "Live-interval",
@@ -76,6 +82,7 @@
           "command_timeout": "Timeout per commando"
         },
         "data_description": {
+          "bluetooth_source": "Bij 'Automatisch' kiest Home Assistant de adapter of ESPHome-proxy met het beste signaal. Kies een specifieke om altijd daarlangs te verbinden (de waarde erachter is de signaalsterkte naar de dongle).",
           "probe_interval": "Elk verzoek kan regeleenheden van een geparkeerd voertuig wekken. Houd dit lang of 0.",
           "live_interval": "Gebruikt tijdens rijden / in live-modus.",
           "categories": "Losse entiteiten kun je ook uitschakelen bij de entiteitsinstellingen."
