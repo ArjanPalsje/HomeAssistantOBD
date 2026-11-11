@@ -38,4 +38,9 @@ jobs:
         with:
           python-version: "3.13"
       - run: pip install -r requirements_test.txt pytest-homeassistant-custom-component
+      - name: Install requirements of the HA components we depend on (bluetooth, usb, …)
+        run: |
+          python scripts/ha_component_requirements.py > ha_reqs.txt
+          cat ha_reqs.txt
+          pip install -r ha_reqs.txt
       - run: pytest -q tests/test_ha_integration.py
